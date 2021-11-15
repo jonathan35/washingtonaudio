@@ -8,7 +8,7 @@ error_reporting(0);
 //------------------- Database Connection ---------------------
 Class DBConn{
 	var $hostname = "localhost";
-	var $database = "washingtonaudio";//xando_borneorealestate
+	var $database = "migrate_washingtong";//washingtonaudio
 	var $username = "root";//xando_bre_user
 	var $password = "";//asouihd97239ptig8fewipugsdipfgyu
 }
@@ -31,7 +31,7 @@ if (!defined('ROOT')) {
 }
 
 if (!defined('A_ROOT')) {
-	define('A_ROOT', 'https://localhost/');
+	define('A_ROOT', 'https://localhost/washingtonaudio.com.my/');
 }
 
 if (!defined('ENCRYPTION_KEY')) {

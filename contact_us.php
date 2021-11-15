@@ -59,17 +59,24 @@ if(!empty($_POST['submit']) && !empty($_POST['name']) && !empty($_POST['email'])
 
 <html lang="en">
 <body class="container-fluid p-0">
-    <div class="my-container">
-        
-        <?php include 'header.php';?>
-        <div style="height:66px;">
-            <div class="page_title">
-                Contact Us
-            </div>
+
+
+    <?php include 'header.php';?>
+
+    <div class="section-head">
+        <div class="section-header">
+            Contact Us
         </div>
+    </div>
+    
+    <div class="my-container">
         <div class="row wave_rec">        
             <div class="col-12 p-4">
-                <div class="row">
+
+
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.4189545444347!2d110.36279531419127!3d1.5175373614378205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31fba717c2313b5f%3A0x49d570dec075c958!2sWashington%20Audio!5e0!3m2!1sen!2smy!4v1635303860098!5m2!1sen!2smy" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+                <div class="row pt-5">
                     <div class="col-12 col-md-7 p-4">
                         <?php
                         $contact_us['content'] = str_replace(array('../../', '<img'), array(ROOT, '<img class="img-fluid"'), $contact_us['content']);                
@@ -77,12 +84,6 @@ if(!empty($_POST['submit']) && !empty($_POST['name']) && !empty($_POST['email'])
                     </div>
                     <div class="col-12 col-md-4 offset-md-1">
 
-                        <div class="row"><div class="col-12"><br></div></div>
-                        <div class="row">
-                            <div class="col-12 p-2 pl-4 pr-4">
-                                <h1>Contact Us</h1>
-                            </div>
-                        </div>
                         <form action="" class="form-group" method="post">
                             <div class="row">
                                 <div class="col-12 p-2 pl-4 pr-4">

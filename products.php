@@ -3,42 +3,101 @@ require_once 'config/ini.php';
 require_once 'config/security.php';
 include_once 'head.php';
 
+
+
+$categories = sql_read("select * from category where status =? order by position asc, category asc", 's', 1);
+
+$key_cond = '';
+$params[] = 1;
+$sta_cond = ' status=? ';
+
+if(!empty($_POST['keyword'])){//This is tour type
+    $key_cond = " and name like ? ";
+    $params[] = "%".$_POST['keyword']."%";
+}
+
+$products = sql_read("select * from product where $sta_cond $key_cond order by position asc, modified desc", str_repeat('s',count($params)), $params);
+
+foreach((array)$categories as $cat){
+    $en_cat[$cat['id']] = $defender->encrypt('encrypt', $cat['id']);
+}
+
+
+
+
+if(!empty($_POST['keyword']) && !empty($_POST['user_keyword'])){
+    
+    //---------------- Update product_keywords ---------------------
+    $product = sql_read("select id from product where $sta_cond $key_cond limit 1", str_repeat('s',count($params)), $params);
+
+    $k['product'] = $product['id'];
+    $k['user_keyword'] = $_POST['user_keyword'];
+    $k['selected_keyword'] = $_POST['keyword'];
+    sql_save("product_keywords", $k);
+    
+
+    //---------------- Update product_analytic > search ---------------------
+    if(!empty($product['id'])){
+        $exist = sql_read("select id, search from product_analytic where product=? limit 1", 'i', $product['id']);
+
+        if(!empty($exist['id'])){
+            $analytic['id'] = $exist['id'];
+            $analytic['search'] = $exist['search'] + 1;
+        }else{
+            $analytic['product'] = $product['id'];
+            $analytic['search'] = 1;
+        }        
+        sql_save("product_analytic", $analytic);
+    }
+}
+
 ?>
 
 <html lang="en">
 
+<div class="cat-trigger d-sm-none" onclick="$('.category-panel').toggleClass('category-active'); toggleHeight(); window.scrollTo(0, 0);"><i class="fa fa-search" aria-hidden="true"></i></div>
 
-<div class="cat-trigger d-sm-none" onclick="$('.category-panel').toggleClass('category-active');"><i class="fa fa-search" aria-hidden="true"></i></div>
+<script>
+function toggleHeight() {
+    var cur_height = $('.category-panel').css('height');
 
+    if(cur_height == '0px'){
+        $('.category-panel').css('height', 'auto');
+    }else{
+        $('.category-panel').css('height', '0');
+    }
+}
+
+</script>
 
 <body class="container-fluid p-0">
+
+
+    <?php include 'header.php';?>
+
+  
+    <div class="section-head">
+        <div class="section-header">
+            Products
+            <div style="color:#FFF; font-size:18px;">
+                We have more products that are not listed here, please get in touch with us to find your perfect products!
+            </div>
+        </div>
+    </div>
+    
     <div class="my-container">
 
-        <?php include 'header.php';?>
-        <div style="height:66px;">
-            <div class="page_title">
-                Products
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 text-center pt-4 pb-3" style="color:#003466; font-size:18px;">
-                We have more products that are not listed here, please get in contact with us to find a perfect products!
-            </div>
-        </div>
         
-        <?php 
-        $categories = sql_read("select * from category where status =? order by position asc, category asc", 's', 1);
-        $products = sql_read("select * from product where status =? order by position asc, modified desc", 's', 1);
 
-        foreach((array)$categories as $cat){
-            $en_cat[$cat['id']] = $defender->encrypt('encrypt', $cat['id']);
-        }
-        ?>
+        <div id="record_analytic" style="display:none;"></div>  
 
         <div class="row wave_rec">
 
             <div class="col-12 col-md-3 pt-3 category-panel">
-                <div class="pro-cat" onclick="filter_product('.fil-cat')">
+                <div class="d-inline d-md-none"><br><br></div>
+                <?php include 'search.php'?>
+
+                <div class="pro-cat" onclick="filter_product('.fil-cat');">
                     All Products
                 </div>
                 <?php 
@@ -89,10 +148,28 @@ include_once 'head.php';
                 function filter_product(cat){
                     $('.fil-cat').hide();
                     $(cat).fadeIn();
+
+                    $('.category-panel').removeClass('category-active');
+                    $('.category-panel').css('height', '0');
+
+                    recordAnalytic();
+
                 }
+
+                function recordAnalytic(){
+                    var showlist = [];
+                    $( ".fil-cat" ).each(function( index ) {
+                        if($( this ).css('display') != 'none'){
+                            showlist.push($( this ).attr('ivalue'));
+                        }
+                    });
+                    $( "#record_analytic" ).load( "record_analytic.php", { "showlist": showlist } );
+                }
+
                 </script>
             </div>
-            
+
+                      
 
             <div class="col-12 col-md-9 p-4 pl-2 pr-md-5"><!-- pl-md-5-->
                 <div class="row">
@@ -104,7 +181,7 @@ include_once 'head.php';
 
                 foreach((array)$products as $product){?>
                     
-                    <div class="col-12 col-sm-4 pb-4 ani_card fil-cat fil-<?php echo $en_scat[$product['sub_category']];?> page page<?php echo $itemCount?>" style=" <?php if($itemCount>$maxPerPage){?> display:none;<?php }?>">
+                    <div class="col-12 col-sm-4 pb-4 ani_card fil-cat fil-<?php echo $en_scat[$product['sub_category']];?> page page<?php echo $itemCount?>" style=" <?php if($itemCount>$maxPerPage){?> display:none;<?php }?>" ivalue="<?php echo $product['id']?>">
                 
                     <div style="height:0; ">
                         <div class="p-1 text-right">

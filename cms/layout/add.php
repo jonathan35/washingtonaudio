@@ -148,7 +148,6 @@ if(!empty($_POST['add2020']) || !empty($_POST['update2020']) || !empty($_POST['d
 }
 
 
-
 if(!empty($id)){//edit mode
 	$data = sql_read('select * from '.$table.' where id=? limit 1', 's', $id);	
 	if(!empty($data)){
@@ -292,7 +291,7 @@ $('.add-trigger').click(function(){
 
                 
     
-                    <div class="col-12 <?php echo $field?>" style="margin-top:12px; <?php if($type[$field]=='hidden'){?> display:none;<?php }?>">
+                    <div class="col-12 row <?php echo $field?>" style="margin-top:12px; <?php if($type[$field]=='hidden'){?> display:none;<?php }?>">
                     
                             <?php if($type[$field] != 'hidden' || ($type[$field] == 'photos' && $_GET['id'])){ ?>
                                 <label <?php echo $attrs?> style=" <?php if($labelFullRow[$field]==true){?>width:100%;<?php }?>">

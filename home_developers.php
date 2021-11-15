@@ -17,14 +17,14 @@ foreach((array)$devs as $dev){
     <div class="col-10 offset-1 d-none d-md-block" style="font-size:14px;">
       <div class="bd-example" data-example-id="">
           <div id="carouselBlock" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner" role="listbox" style="padding:40px; height:140px;">                 
+            <div class="carousel-inner" role="listbox" style="padding:20px; height:120px;">                 
             <?php 
             $o = 0;
             foreach((array)$developers as $developer){?>
               <div class="carousel-item <? if($o==0){?>active<? }?>">
                 <div class="row">
                     <? foreach((array)$developer as $n){?>
-                    <div class="col-12 col-md-3" style="background-position: center; background-repeat: no-repeat; background-size: contain; height: 60px; background-image:url('<?php echo $n['developer_photo']?>')">
+                    <div class="col-12 col-md-3" style="background-position: center; background-repeat: no-repeat; background-size: contain; height: 120px; background-image:url('<?php echo $n['developer_photo']?>')">
                     </div>	
                     <?php }?>
                 </div>                     
@@ -56,12 +56,12 @@ foreach((array)$devs as $dev){
     <div class="col-12" style="font-size:14px;">
       <div class="bd-example" data-example-id="">
           <div id="carouselBlock2" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner" role="listbox" style="padding:40px; height:140px;">                 
+            <div class="carousel-inner" role="listbox" style="padding:20px; height:120px;">                 
             <?php 
             $o = 0;
             foreach((array)$developers as $developer){
               foreach((array)$developer as $n){?>
-                <div class="carousel-item <? if($o==0){?>active<? }?>"  style="background-position: center; background-repeat: no-repeat; background-size: contain; height: 60px; background-image:url('<?php echo $n['developer_photo']?>')">
+                <div class="carousel-item <? if($o==0){?>active<? }?>"  style="background-position: center; background-repeat: no-repeat; background-size: contain; height: 120px; background-image:url('<?php echo $n['developer_photo']?>')">
                 </div>
               <?php 
               $o++;

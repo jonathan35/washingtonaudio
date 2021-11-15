@@ -47,10 +47,16 @@ require_once 'config/str_convert.php';
     <link rel="stylesheet" href="<?php echo ROOT?>fontawesome/css/solid.min.css">
 
 
+    <!-- PrettyPhoto -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="<?php echo ROOT?>css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
+    <script src="<?php echo ROOT?>js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+
+
     <script src="<?php echo ROOT?>js/animate.js"></script>
     <link rel="stylesheet" href="<?php echo ROOT?>css/animate.css">
 
-    <link href="<?php echo ROOT?>css/custom.css" rel="stylesheet" />
+    <link href="<?php echo ROOT?>css/custom.css?v=1" rel="stylesheet" />
     
     <?php /**
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"

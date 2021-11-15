@@ -23,6 +23,8 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
 RewriteRule ^home?$ index.php [QSA,L]
 RewriteRule ^contact_us?$ contact_us.php [QSA,L]
 RewriteRule ^news?$ news.php [QSA,L]
+RewriteRule ^gallery?$ album.php [QSA,L]
+RewriteRule ^gallery/([^/\.]+)?$ album.php?al=$1 [QSA,L]
 RewriteRule ^products?$ products.php [QSA,L]
 RewriteRule ^product_details/([^/\.]+)?$ product_details.php?p=$1 [QSA,L]
 

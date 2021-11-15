@@ -7,14 +7,17 @@ $news = sql_read("select * from news where status = ? order by position asc, id 
 
 <html lang="en">
 <body class="container-fluid p-0">
-    <div class="my-container">
-        
-        <?php include 'header.php';?>
-        <div style="height:66px;">
-            <div class="page_title">
-                Updates
-            </div>
+
+
+    <?php include 'header.php';?>
+
+    <div class="section-head">
+        <div class="section-header">
+            News
         </div>
+    </div>
+    
+    <div class="my-container">
         <div class="row wave_rec">        
             <div class="col-12 p-4">
                 <div class="row">

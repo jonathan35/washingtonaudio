@@ -16,7 +16,7 @@ $table = 'pages';
 $module_name = 'Pages';
 $php = 'pages';
 $folder = 'content';
-$add = true;
+$add = false;
 $edit = true;
 $tinymce_photo = true;
 $list = true;
@@ -137,7 +137,7 @@ label {width:30%;}
 
 <div class="row">
 
-	<?php if($_GET['no_list'] != 'true'){?>
+	<?php if($add==true && $_GET['no_list'] != 'true'){?>
 	<div class="btn btn-secondary ml-3 mb-3" onclick="$('.add_page').fadeToggle(); $('.icon_add, .icon_minus').toggle();">
 		Add Page
 		<span class="icon_add" style="font-size:20px;">+</span>
@@ -145,7 +145,7 @@ label {width:30%;}
 	</div>
 	<?php }?>
 
-	<?php if($add==true || $_GET['id']){?>
+	<?php if($add==true || !empty($_GET['id'])){?>
 	<div class="col-12 <?php if($_GET['no_list'] != 'true'){?>collapse add_page<?php }?>">
 		<?php include '../layout/add.php';?>
 	</div>

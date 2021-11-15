@@ -9,14 +9,17 @@ if($_GET['t']){
 
 <html lang="en">
 <body class="container-fluid p-0">
-    <div class="my-container">
-        
-        <?php include 'header.php';?>
-        <div style="height:66px;">
-            <div class="page_title">
-                <?php echo $ffpage['title'];?>
-            </div>
+
+
+    <?php include 'header.php';?>
+
+    <div class="section-head">
+        <div class="section-header">
+            <?php echo $ffpage['title']?>
         </div>
+    </div>
+    
+    <div class="my-container">
         <div class="row">
             <div class="col-12 p-4">
                 <?php

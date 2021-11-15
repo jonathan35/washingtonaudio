@@ -1,10 +1,9 @@
-
-
 RewriteEngine On
 #RewriteCond %{HTTPS} !=on
 #RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE] 
 
 RewriteRule ^authentication/logout?$ authentication/logout.php
+#RewriteRule ^layout/mobile_preview?$ layout/mobile_preview.php [QSA,L]
 
 RewriteRule ^([^/\.]+)/([^/\.]+)?$ layout/index.php?fol=$1&pag=$2 [QSA,L]
 

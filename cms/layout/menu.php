@@ -1,11 +1,12 @@
 <div class="leftmenu-contain">  
 
-
   <h4>Home</h4>
   <div class="nav lnav" link="../content/banner">Banner</div>
   <div class="nav lnav" link="../content/developer">Developer</div>
   <div class="nav lnav" link="../content/home_block">Why Choose Us?</div>
-  <!--<div class="nav lnav" link="../content/banner_dashboard?id=Mg==">Banner (Account Dashboard)</div>-->
+  <div class="nav lnav" link="../content/row">Home Row</div>
+  <!--<div class="nav lnav" link="../content/content">R&L Content</div>
+  <div class="nav lnav" link="../content/banner_dashboard?id=Mg==">Banner (Account Dashboard)</div>-->
 
 
   <h4>Product</h4>
@@ -14,6 +15,10 @@
   <div class="nav lnav" link="../product/product">Product</div>
   <div class="nav lnav" link="../product/message?tab=New">Message</div>
 
+
+  <h4>Gallery</h4>
+  <div class="nav lnav" link="../gallery/album">Album</div>
+  <div class="nav lnav" link="../gallery/album_photo">Album Photo</div>
 
 
   <h4>Pre-desgin</h4>

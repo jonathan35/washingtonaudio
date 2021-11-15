@@ -1,0 +1,268 @@
+<?php 
+require_once '../../config/ini.php'; 
+require_once '../../config/security.php';
+require_once '../../config/str_convert.php';
+require_once '../../config/image.php';
+//include '../layout/savelog.php';
+
+session_start();
+if($_SESSION['validation']=='YES'){
+}else{
+	header("Area:../authentication/login.php");
+}
+
+$table = 'album_photo';
+$module_name = 'Album Photo';
+$php = 'album_photo';
+$folder = 'gallery';//auto refresh row once edit modal closed
+$add = true;
+$edit = true;
+$list = true;
+$list_method = 'list';
+$sort = " order by position ASC, created DESC limit 500";
+$more_photos = true;
+
+
+$keyword = false;//Component to search by keyword
+$keywordMustFullWord=false;
+$keywordFields=array('name', 'location');
+$filter = false;
+$filFields = array('brand', 'album');
+
+
+
+$actions=array('Delete', 'Display', 'Hide');//, 'Display', 'Hide'
+$msg['Delete']='Are you sure you want to delete?';
+$msg['Display']='Are you sure you want to display?';	$db['Display']=array('status', '1');
+$msg['Hide']='Are you sure you want to hide?';			$db['Hide']=array('status', '2');
+$msg['Activate']='Are you sure you want to activate?';	$db['Activate']=array('status', '1');
+$msg['Suspend']='Are you sure you want to suspend?';	$db['Suspend']=array('status', '0');
+
+//$unique_validation=array('tier');
+
+$fields = array('id', 'album', 'photo', 'position');
+
+
+
+$value = array();
+$type = array();
+$width = array();//width for input field
+$placeholder = array();
+
+#####Design part#######
+$back = false;// "Back to listing" button, true = enable, false = disable
+$fic_1 = array(0=>array(3, 1), 1 => array(1));//fic = fiels in column, number of fields by column $fic_1 normally for add or edit template
+$fic_2 = array('5', '1');//fic = fiels in column, number of fields by column $fic_2 normally for list template
+
+foreach((array)$fields as $field){
+	$value[$field] = '';
+	$type[$field] = 'text';
+	$placeholder[$field] = '';
+	$required[$field] = '';
+}
+/* Tag module uses session*/
+$type['tag'] = 'tag';
+$_SESSION['tag_name']='tag';//name for input table field.
+$_SESSION['tag_module']=$table;
+$_SESSION['module_row_id']='';
+if(!empty($_GET['id'])){
+	$_SESSION['module_row_id']=base64_decode($_GET['id']);
+}
+
+
+$label['size'] = 'Size (sq.ft.)';
+$type['pdf'] = 'file'; 
+$label['pdf'] = 'PDF File'; 
+
+$type['brand'] = 'select'; $option['brand'] = array();
+$results = sql_read('select * from brand where status=1 order by position ASC');
+$option['brand'][] = 'Select Brand';
+foreach((array)$results as $a){
+	$option['brand'][$a['id']] = ucwords($a['brand']);
+}
+
+
+$child['album'] = true;
+$type['album'] = 'select'; $option['album'] = array();
+$results = sql_read('select * from album where status=1 order by position ASC');
+foreach((array)$results as $a){
+	$option['album'][$a['id']] = ucwords($a['album']);
+}
+
+
+$parent['sub_album'] = 'album'; $parent_val['sub_album'] = array();
+$type['sub_album'] = 'select'; $option['sub_album'] = array();
+$results = sql_read('select * from sub_album where status=1 order by position ASC');
+foreach((array)$results as $a){
+	$option['sub_album'][$a['id']] = ucwords($a['sub_album']);
+	if(!empty($parent['sub_album'])){
+		$parent_val['sub_album'][$a['id']] = $a[$parent['sub_album'] ];
+	}
+}
+
+
+$type['id'] = 'hidden';
+$type['photo'] = 'image';
+$type['qr_code'] = 'image'; $remark['qr_code'] = 'Recommanded size: 400 x 400 pixel';
+$type['password'] = 'password';
+$type['bedrooms'] = 'number';
+$type['bathrooms'] = 'number';
+$type['position'] = 'number';
+
+
+$type['new_arrival'] = 'radio'; $option['new_arrival'] = array('Yes'=>'Yes', 'No'=>'No');
+$type['best_deal'] = 'radio'; $option['best_deal'] = array('Yes'=>'Yes', 'No'=>'No');
+$type['in_stock'] = 'radio'; $option['in_stock'] = array('Yes'=>'Yes', 'No'=>'No');
+$type['hot_item'] = 'radio'; $option['hot_item'] = array('Yes'=>'Yes', 'No'=>'No');
+$type['clearance_sale_date'] = 'date';
+$type['promotion_until'] = 'date';
+
+$attributes['promotion_until'] = array('placeholder' => 'Choose a date');
+$attributes['clearance_sale_title'] = array('maxlength' => 50, 'placeholder' => 'Max. 50 characters.');
+$attributes['clearance_sale_date'] = array('placeholder' => 'Choose a date');
+
+
+//$type['publish_date'] = 'date';
+$type['description'] = 'textarea'; $tinymce['description']=true;  $labelFullRow['description']=false; $height['description'] = '200px;'; $width['description'] = '100%;'; 
+$type['group_id'] = 'select'; $option['group_id'] = array('1'=>'Master Admin', '2'=>'Admin');
+$type['status'] = 'select'; $option['status'] = array('1'=>'Display','2'=>'Hide'); $default_value['status'] = '1';
+$type['new'] = 'select'; $option['new'] = array('Yes'=>'Yes','No'=>'No'); $default_value['new'] = 'Yes';
+
+
+$resize_width['photo'] = 1200;
+$resize_height['photo'] = 1000;
+
+
+$attributes['album'] = array('required' => 'required');
+$attributes['sub_album'] = array('required' => 'required');
+$attributes['status'] = array('required' => 'required');
+$attributes['bedrooms'] = array('placeholder' => 'Bedrooms Count', 'max' => '99');
+$attributes['bathrooms'] = array('placeholder' => 'Bathrooms Count', 'max' => '99');
+$attributes['size'] = array('placeholder' => 'Size in square feet');
+$attributes['name'] = array('placeholder' => 'Album Photo Name');
+$attributes['location'] = array('placeholder' => 'Album Photo Location');
+$attributes['position'] = array('placeholder' => 'A number for sorting');
+
+$remark['photo'] = 'Recommanded size: 1200 x 1000 pixel';
+
+
+/*if(empty($id)){
+	$required['photo01'] = 'required';
+}*/
+/*
+echo '<div style="margin-left:20%;">';
+foreach((array)$fields as $field){
+	echo $field;
+	echo $width[$field];
+	echo '<br>';
+	print_r($fic_1);
+}
+echo '</div>';
+*/
+$cols = $items =array();
+
+$cols = array('Brand & Category' => '3', 'Album Photo' => '2', 'Name' => '5', 'Location' => '2');//Column title and width
+$items['Brand & Category'] = array('brand', 'album', 'sub_album');
+$items['Album Photo'] = array('photo');
+$items['Name'] = array('name');
+$items['Location'] = array('location');
+
+if(empty($_POST['get_config_only'])){
+?>
+
+<link href="<?php echo ROOT?>cms/css/bootstrap.4.5.0.css" rel="stylesheet">
+<link href="<?php echo ROOT?>cms/css/cms.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!--For date picker use - start -->
+<link rel="stylesheet" href="<?php echo ROOT?>js/datepicker/jquery-ui.css">
+<link rel="stylesheet" href="<?php echo ROOT?>js/datepicker/style.css">
+<script src="<?php echo ROOT?>js/datepicker/jquery-1.12.4.js"></script>
+<script src="<?php echo ROOT?>js/datepicker/jquery-ui.js"></script>
+<script>
+$( function() {
+    $( ".datepicker" ).datepicker({ /*minDate: +7,*/ maxDate: "+10Y +6M +1D", dateFormat: 'yy-mm-dd' });
+} );
+</script>
+<!--For date picker use - end -->
+<style>
+label {width:30%;}
+.div_input {width:69%;}
+</style>
+
+
+<div class="row">
+	
+	
+	<?php if($add==true || $_GET['id']){?>
+	<div class="col-12 <?php if($_GET['no_list'] != 'true'){?>add_album_photo<?php }?>">
+		<?php include '../layout/add.php';?>
+	</div>
+	<?php }?>
+</div>
+<div class="row">
+	<div class="col-12">
+		<?php if(!$_GET['no_list']) include '../layout/list.php';?>
+	</div>
+</div>
+
+<script>
+function chkAll(frm, arr, mark){
+  for (i = 0; i <= frm.elements.length; i++){
+   try{
+     if(frm.elements[i].name == arr){
+       frm.elements[i].checked = mark;
+     }
+   } catch(er) {}
+  }
+}
+</script>
+
+
+<script type="text/javascript" src="<?php echo ROOT?>js/jquery-1.js"></script>
+<script type="text/javascript" src="<?php echo ROOT?>js/layout.js"></script>
+<script type="text/javascript" src="<?php echo ROOT?>js/functions.jquery.js"></script>
+<?php include '../../config/session_msg.php';?>
+
+
+<?php if(empty($_GET['id'])){?>
+
+
+	<script>
+	
+
+	$(document).ready(function(){
+		auto_fill_min();
+	})
+	$(".div_input > select[name=album]").change(function(){
+		auto_fill_min();
+	})
+	$(".div_input > select[name=sub_album]").change(function(){
+		auto_fill_min();
+	})
+	$(".div_input > select[name=area]").change(function(){
+		auto_fill_min();
+	})
+
+
+	function auto_fill_min(){
+
+		$("input[name=min_checkout_price]").attr('readonly', 'readonly');
+		
+		var album = $(".div_input > select[name=album]").val();
+		var sub_album = $(".div_input > select[name=sub_album]").val();		
+		var area = $(".div_input > select[name=area]").val();
+
+		$.post('get_min.php', {album:album, sub_album:sub_album, area:area}, function(return_fee){
+			$("input[name=min_checkout_price]").val(return_fee);
+		})
+
+	}
+	</script>
+
+<?php }?>
+
+
+</html>
+<?php }?>
